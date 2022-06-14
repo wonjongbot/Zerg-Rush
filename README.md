@@ -21,6 +21,8 @@ main.py takes three arguments, where respectively be used as attacker ip address
 example:
 > python3 main.py 192.168.0.1 192.168.0.2 5555
 
+no commandline arguments sets all three values as NULL, which must be changed in the menu.
+
 ## Menu Navigation
 
 Zerg Rush offers CLI menu navigation to select types of attack and modify attack configurations. A menu screen would look something like below:
@@ -47,7 +49,7 @@ Zerg Rush offers CLI menu navigation to select types of attack and modify attack
     3. Modify attacker IP address
     4. Modify target IP address
     5. Modify target port number
->
+zRush >
 ```
 
 ## Attacks
@@ -68,19 +70,43 @@ Here are some notes from experiements performed with Zerg-rush
 
 ### ABB REF615 Feeder Protection and Control Relay
 
-#### SYN flood attack
+#### HTTP server
 
-Target port: 80
+_SYN flood attack_:
+- Target port: 80
+- Affect: HTTP server crashed
 
-Affect: HTTP server crashed
+_ACK flood attack_:
 
-#### ACK flood attack
+- Target port: 80
+- Affect: HTTP server crashed
 
-Target port: 80
+### SEL-751 Feeder Protection Relay
 
-Affect: HTTP server crashed
+#### FTP server
 
-## Goals
+_SYN flood attack_:
+- Target port: 21
+- Affect: FTP server seems to be slowed down. Sometimes returns this message before correctly returning command
+> 229 Entering Extended Passive Mode (|||34771|).
+
+_ACK flood attack_:
+
+- Target port: 21
+- Affect: FTP server crashed with message like below
+> 421 Service not available, remote server has closed connection.
+226 Closing data connection.
+
+_Long String Attack_
+- Target port: 21
+- running two processes of this attacks blocks other users from connecting through FTP because SEL only allows 2 ftp connections
+- I can hear relay clicks whenever one fails to log into FTP.
+
+## Future Goals
 
 - Experiment with different flooding attacks and their affects on ICS's critical system
     - test connection to serial port to read out malfunctions & etc
+- Modify ACK attack s.t. I don't use sr1 command (keep them seperate so whenever SYN/ACK comes in send ACK packet. No need to send wait send wait send wait..)
+- Send very long packets with no carriage return
+    - super long ID/PW
+    - malformed HTTP request
