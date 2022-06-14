@@ -68,10 +68,10 @@ Here are some notes from experiements performed with Zerg-rush
 
 ### ABB REF615 Feeder Protection and Control Relay
 
-####SYN flood attack
+#### SYN flood attack
 Target port: 80
 Affect: HTTP server crashed
 
-####
+#### ACK flood attack
 Target port: 80
 Affect: HTTP server crashed
