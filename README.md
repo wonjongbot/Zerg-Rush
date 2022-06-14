@@ -70,8 +70,10 @@ Here are some notes from experiements performed with Zerg-rush
 
 #### SYN flood attack
 Target port: 80
+
 Affect: HTTP server crashed
 
 #### ACK flood attack
 Target port: 80
+
 Affect: HTTP server crashed
