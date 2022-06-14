@@ -80,7 +80,7 @@ Target port: 80
 
 Affect: HTTP server crashed
 
-## Future objective
+## Goals
 
 - Experiment with different flooding attacks and their affects on ICS's critical system
     - test connection to serial port to read out malfunctions & etc
