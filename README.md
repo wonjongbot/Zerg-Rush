@@ -65,6 +65,9 @@ In ACK flood mode, the attacker establishes a full connection to the target by s
 
 However, Zerg-Rush already runs this command whenever ACK flood attack is initiated. Also, the filtering above is reverted once the user exits the program.
 
+### Long string flooding
+
+
 ## Achievements
 Here are some notes from experiements performed with Zerg-rush
 
@@ -81,6 +84,10 @@ _ACK flood attack_:
 - Target port: 80
 - Affect: HTTP server crashed
 
+_long string attack_:
+- Target port: 80
+- Affect: when attack runs, program crashes after returning broken pipe error, indicating that the server cut the connection off. No noticeable affect on WHMI page of the relay. Wireshark shows that the relay sends RST to the attacker.
+
 ### SEL-751 Feeder Protection Relay
 
 #### FTP server
@@ -88,7 +95,7 @@ _ACK flood attack_:
 _SYN flood attack_:
 - Target port: 21
 - Affect: FTP server seems to be slowed down. Sometimes returns this message before correctly returning command
-> 229 Entering Extended Passive Mode (|||34771|).
+> 229 Entering Extended Passive Mode (|||PORT NUM|).
 
 _ACK flood attack_:
 

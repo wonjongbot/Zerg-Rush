@@ -26,41 +26,40 @@ def selection(src, dst, dport):
         print("[!] Target IP address is NULL. Please use opiton 3 to enter argument.")
     if (dport == int("-1")):
         print("[!] Target port is NULL. Please use opiton 3 to enter argument.\n")
-    print("[*] Please select options below:\n    0. Long packet attack\n    1. SYN flood attack\n    2. ACK flood attack\n    3. Modify attacker IP address\n    4. Modify target IP address\n    5. Modify target port number")
+    print("[*] Please select options below:\n    1. Modify attacker IP address\n    2. Modify target IP address\n    3. Modify target port number\n    4. SYN flood attack\n    5. ACK flood attack\n    6. Long packet attack\n")
 
     foo = input("\nzRush > ")
     print("\n[*] You have selected "+foo)
     match foo:
-        case "0":
-            uin = input("Enter starting power of 2:\nzRush > ")
-            lpacket_raw(src,dst, dport, uin)
         case "1":
-            syn_flood(src, dst, dport)
-        case "2":
-            ACK_attack(src, dst, dport)
-        case "3":
             tmp = src
-            src = input("Enter new attacker IP address or \"back\" below\n\nzRush > ")
+            src = input("Enter new attacker IP address or type \"back\" below\n\nzRush > ")
             if (src == "back"):
                 selection(tmp, dst, dport)
             else:
                 selection(src, dst, dport)
-        case "4":
+        case "2":
             tmp = dst
-            dst = input("Enter new target IP address or \"back\" below\n\nzRush > ")
+            dst = input("Enter new target IP address or type \"back\" below\n\nzRush > ")
             if (dst == "back"):
                 selection(src, tmp, dport)
             else:
                 selection(src, dst, dport)
-        case "5":
+        case "3":
             tmp = dport
-            dport = input("Enter new target port number or \"back\" below\n\nzRush > ")
+            dport = input("Enter new target port number or type \"back\" below\n\nzRush > ")
             if (dport == "back"):
                 selection(src, dst, tmp)
             else:
                 selection(src, dst, dport)
-    selection(src,dst,dport)
-
+        case "4":
+            syn_flood(src, dst, dport)
+        case "5":
+            ACK_attack(src, dst, dport)
+        case "6":
+            lpacket_raw(src,dst, dport)
+        case "7":
+            HTTPhackery(src,dst, dport)
 if __name__ == "__main__":
     from scapy.all import*
     from attacks import *
