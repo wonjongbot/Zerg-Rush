@@ -189,7 +189,26 @@ Network Distance: 1 hop
 OS detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 17.91 seconds
 ```
-
+- nmap vulnerabiltiy scan
+```
+~$ nmap -sV --script vuln 192.168.1.15
+Starting Nmap 7.80 ( https://nmap.org ) at 2022-06-17 15:01 CDT
+Nmap scan report for 192.168.1.15
+Host is up (0.0011s latency).
+Not shown: 997 closed ports
+PORT      STATE SERVICE    VERSION
+21/tcp    open  ftp        NET Disk/NetStore ftpd (Disabled)
+|_clamav-exec: ERROR: Script execution failed (use -d to debug)
+|_sslv2-drown: 
+80/tcp    open  tcpwrapped
+|_clamav-exec: ERROR: Script execution failed (use -d to debug)
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-vuln-cve2014-3704: ERROR: Script execution failed (use -d to debug)
+20000/tcp open  dnp?
+|_clamav-exec: ERROR: Script execution failed (use -d to debug)
+```
 #### nikto scan
 ```
 - Nikto v2.1.5
