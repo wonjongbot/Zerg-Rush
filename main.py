@@ -60,6 +60,8 @@ def selection(src, dst, dport):
             lpacket_raw(src,dst, dport)
         case "7":
             HTTPhackery(src,dst, dport)
+        case "8":
+            UDPteardrop(src, dst, dport)
 if __name__ == "__main__":
     from scapy.all import*
     from attacks import *

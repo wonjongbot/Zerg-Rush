@@ -71,6 +71,16 @@ However, Zerg-Rush already runs this command whenever ACK flood attack is initia
 
 ### Long string flooding
 
+Sends very long string to designated IP and PORT
+
+### HTTP malformed request
+
+Sends malformed req through HTTP
+
+### Teardrop(UDP)
+
+Sends fragmented UDP with malformed offset
+
 ## Achievements
 
 Here are some notes from experiements performed with Zerg-rush

