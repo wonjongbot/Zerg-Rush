@@ -62,6 +62,10 @@ def selection(src, dst, dport):
             HTTPhackery(src,dst, dport)
         case "8":
             UDPteardrop(src, dst, dport)
+        case "9":
+            TCPteardrop(src, dst, dport)
+        case "10":
+            ARPSpoof(src, dst, dport)
 if __name__ == "__main__":
     from scapy.all import*
     from attacks import *
