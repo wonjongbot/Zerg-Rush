@@ -26,8 +26,23 @@ def selection(src, dst, dport):
         print("[!] Target IP address is NULL. Please use opiton 3 to enter argument.")
     if (dport == int("-1")):
         print("[!] Target port is NULL. Please use opiton 3 to enter argument.\n")
-    print("[*] Please select options below:\n    1. Modify attacker IP address\n    2. Modify target IP address\n    3. Modify target port number\n    4. SYN flood attack\n    5. ACK flood attack\n    6. Long packet attack\n")
-
+    menudict = {
+        "mod_attack_IP": "Modify attacker IP address",
+        "mod_target_IP": "Modify target IP address",
+        "mod_target_port": "Modify target port number",
+        "SYN_flood": "SYN flood attack",
+        "ACK_flood": "ACK flood attack",
+        "lpacket": "Long packet attack",
+        "httphackery": "Malformed HTTP request",
+        "udpteardrop": "Fragmented UDP packet with malformed offset",
+        "TCPteardrop": "Fragmented TCP packet with malformed offset",
+        "ARPSpoof": "ARP spoofing for MIM",
+    }
+    print("[*] Please select options below:")
+    i = 1
+    for k in menudict.items():
+        print("    "+str(i)+". "+k[1])
+        i+=1
     foo = input("\nzRush > ")
     print("\n[*] You have selected "+foo)
     match foo:
