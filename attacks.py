@@ -233,7 +233,7 @@ def TCPteardrop(src, dst, dport):
             send(ip/load1)
                 send(ip/load1)
         case "7":
-            print("[*] enter size of pacekt")
+            print("[*] enter size of packet")
             size = int(input("zRush > "))
             print("[*] enter number of pacekts")
             num = input("zRush > ")
