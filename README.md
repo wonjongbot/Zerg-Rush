@@ -300,8 +300,11 @@ msf6 auxiliary(scanner/portscan/tcp) > db_nmap -sV -A -p 80 192.168.1.15
 ```
 
 # notes
+
 ## Jun 18 2022
+
 ### TCP fragmentation experiment
+
 - I think sending packet is successful, as we get ACK/FIN from HTTP server. However, nothing happens on the relay side.
 - wireshark reads as such:
 ![image: tcp attack](images/tcp_offset.png)
@@ -309,9 +312,22 @@ msf6 auxiliary(scanner/portscan/tcp) > db_nmap -sV -A -p 80 192.168.1.15
   - send fragmented packets, but hold on to/completely delete the intermediate packet) since all the attacks that I implemented are malformed offset attack, which doesn't seem to have any affect on the relay
 
 ### UDP fragmentation experiment
+
 - I am not sure if the packet went through. It's UDP so I am not sure if it received the packet. (1 way communication)
 - however, my PC sends BAD UDP LENGTH packet to the HTTP server. Should I filter this from IPTABLES?
 ![image: tcp attack](images/udp_offset.png)
 
 ### ARP spoofing
+
 - ARP spoofing was a success. As you can see in the image below, the MAC address of gateway address changes before and after the attack. In fact, the mac address of the gateway in the midst of the attack is indeed the mac address of the attacker.
+
+### REF 615 HTTP server
+
+- uses HTTP Digest access authentication
+- ftp server and HTTP shares password
+- can use PUT command to override ANY file in the relay's server
+  possible attacks
+  - flood storage with arbitrary files
+  - forge http file and ovewrite server core files
+  - find configuration file, take over directly
+  - save malicious html file with javascript code and run it to see file structure
