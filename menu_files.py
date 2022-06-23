@@ -99,5 +99,6 @@ def menulogic(src, dst, dport):
         ARPSpoof(src, dst, dport)
     elif foo == "11":
         telnet_long(src, dst, dport)
+        print("hello")
     else:
         selection(src, dst, dport)
