@@ -15,6 +15,7 @@ menudict = {
     "udpteardrop": "Fragmented UDP packet with malformed offset",
     "TCPteardrop": "Fragmented TCP packet with malformed offset",
     "ARPSpoof": "ARP spoofing for MIM",
+    "telnet_long": "Telnet long string attack",
 }
 
 def printsplash():
@@ -96,5 +97,7 @@ def menulogic(src, dst, dport):
         TCPteardrop(src, dst, dport)
     elif foo == "10":
         ARPSpoof(src, dst, dport)
+    elif foo == "11":
+        telnet_long(src, dst, dport)
     else:
         selection(src, dst, dport)

