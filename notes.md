@@ -207,3 +207,168 @@ OS details: HP LaserJet M451dn, CM1415fnw, or CP4525
 Network Distance: 1 hop
 
 ```
+
+### ElectroBlox notes
+
+``` command
+wonjongbot@computadora:~$ sudo nmap 192.168.1.11
+[sudo] password for wonjongbot: 
+Starting Nmap 7.80 ( https://nmap.org ) at 2022-06-22 12:56 CDT
+Nmap scan report for 192.168.1.11
+Host is up (0.00072s latency).
+Not shown: 997 filtered ports
+PORT   STATE SERVICE
+21/tcp open  ftp
+23/tcp open  telnet
+80/tcp open  http
+MAC Address: 00:09:91:45:BE:4C (Intelligent Platforms)
+```
+
+``` command
+wonjongbot@computadora:~$ sudo nmap 192.168.1.11 -O
+Starting Nmap 7.80 ( https://nmap.org ) at 2022-06-22 12:57 CDT
+Nmap scan report for 192.168.1.11
+Host is up (0.00070s latency).
+Not shown: 997 filtered ports
+PORT   STATE SERVICE
+21/tcp open  ftp
+23/tcp open  telnet
+80/tcp open  http
+MAC Address: 00:09:91:45:BE:4C (Intelligent Platforms)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Aggressive OS guesses: Roku SoundBridge M500 or M1000 music player (96%), Polycom VSX 7000a video conferencing system (94%), Polycom VSX 7000e/8000 video conferencing system (94%), Stratus ftServer Virtual Technician Module (94%), Head Digital Medialink Black Panther cable receiver (94%), KW-Software ProConOS (94%), Polycom VSX 8000 video conferencing system (94%), D-Link DWL-900AP+, Planet WAP-1966, or USRobotics USR5450 WAP (93%), Denon AVR-3808CI audio/video receiver, Philips SLA5500 or SLA5520 Wireless Music Adapter or WAK3300 wireless alarm clock, or Terratec NOXON audio system (93%), Audio receiver: Bose Soundtouch 20, Bowers & Wilkins Zeppelin Air, Denon AVR-1900-series, Marantz NR1602, or Pioneer VSX-921 (93%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 1 hop
+
+OS detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 8.31 seconds
+
+```
+``` command
+^Cwonjongbot@computadora:~/Zerg-Rush$ nikto -h 192.168.1.11
+- Nikto v2.1.5
+---------------------------------------------------------------------------
++ Target IP:          192.168.1.11
++ Target Hostname:    192.168.1.11
++ Target Port:        80
++ Start Time:         2022-06-22 13:00:21 (GMT-5)
+---------------------------------------------------------------------------
++ Server: InterNiche Technologies WebServer 2.0
++ The anti-clickjacking X-Frame-Options header is not present.
++ Cookie SessionID created without the httponly flag
++ Uncommon header 'refresh' found, with contents: 0;URL=/login.html
++ No CGI Directories found (use '-C all' to force check all possible dirs)
+
++ /login.html: Admin login page/section found.
++ 6544 items checked: 65 error(s) and 4 item(s) reported on remote host
++ End Time:           2022-06-22 13:03:05 (GMT-5) (164 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested
+```
+
+``` command
+msf6 auxiliary(scanner/portscan/tcp) > db_nmap -sV -A -p 80 192.168.1.11
+[*] Nmap: Starting Nmap 7.80 ( https://nmap.org ) at 2022-06-22 13:10 CDT
+[*] Nmap: Nmap scan report for 192.168.1.11
+[*] Nmap: Host is up (0.0010s latency).
+[*] Nmap: PORT   STATE SERVICE VERSION
+[*] Nmap: 80/tcp open  http    InterNiche Technologies WebServer 2.0
+[*] Nmap: | http-cookie-flags:
+[*] Nmap: |   /:
+[*] Nmap: |     SessionID:
+[*] Nmap: |_      httponly flag not set
+[*] Nmap: |_http-server-header: InterNiche Technologies WebServer 2.0
+[*] Nmap: |_http-title: ElectroBlox
+[*] Nmap: Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+[*] Nmap: Nmap done: 1 IP address (1 host up) scanned in 16.91 seconds
+```
+
+```command
+msf6 auxiliary(scanner/portscan/tcp) > db_nmap -sV -A -p 21 192.168.1.11
+[*] Nmap: Starting Nmap 7.80 ( https://nmap.org ) at 2022-06-22 13:12 CDT
+[*] Nmap: Nmap scan report for 192.168.1.11
+[*] Nmap: Host is up (0.0023s latency).
+[*] Nmap: PORT   STATE SERVICE VERSION
+[*] Nmap: 21/tcp open  ftp     Multitech MultiVoip 410 VoIP gateway ftpd
+[*] Nmap: | ftp-anon: Anonymous FTP login allowed (FTP code 230)
+[*] Nmap: | -rw-rw-rw- 40000000 getsgs getsgs   298 ??? 00 00:00:00 logInfoManager.dat [NSE: writeable]
+[*] Nmap: | -rw-rw-rw- 40000000 getsgs getsgs     8 ??? 00 00:00:00 ErrorLogConfig2.dat [NSE: writeable]
+[*] Nmap: | -rw-rw-rw- 40000000 getsgs getsgs     8 ??? 00 00:00:00 UserLogConfig.dat [NSE: writeable]
+[*] Nmap: | -rw-rw-rw- 40000000 getsgs getsgs    10 ??? 00 00:00:00 DatLogCfg.dat [NSE: writeable]
+[*] Nmap: | -rw-rw-rw- 40000000 getsgs getsgs    10 ??? 00 00:00:00 PTCEventLogConfig.dat [NSE: writeable]
+[*] Nmap: | -rw-rw-rw- 40000000 getsgs getsgs    10 ??? 00 00:00:00 PTCCommLogConfig.dat [NSE: writeable]
+[*] Nmap: | -rw-rw-rw- 40000000 getsgs getsgs    10 ??? 00 00:00:00 PTCDeviceLogConfig.dat [NSE: writeable]
+[*] Nmap: | -rw-rw-rw- 40000000 getsgs getsgs    10 ??? 00 00:00:00 SNMPCommLogConfig.dat [NSE: writeable]
+[*] Nmap: | drw-rw-rw- 20000000 getsgs getsgs     0 Jan 27 22:28:10 upload [NSE: writeable]
+[*] Nmap: |_-rw-rw-rw- 40000000 getsgs getsgs    14 Jan 27 22:28:10 PTCDeviceLogFile.dat [NSE: writeable]
+[*] Nmap: |_ftp-bounce: bounce working!
+[*] Nmap: Service Info: Device: VoIP adapter
+[*] Nmap: Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+[*] Nmap: Nmap done: 1 IP address (1 host up) scanned in 6.58 seconds
+```
+
+```command
+msf6 auxiliary(scanner/portscan/tcp) > db_nmap -sV -A -p 23 192.168.1.11
+[*] Nmap: Starting Nmap 7.80 ( https://nmap.org ) at 2022-06-22 13:13 CDT
+[*] Nmap: Nmap scan report for 192.168.1.11
+[*] Nmap: Host is up (0.00095s latency).
+[*] Nmap: PORT   STATE SERVICE VERSION
+[*] Nmap: 23/tcp open  telnet  APC PDU/UPS devices or Windows CE telnetd
+[*] Nmap: | fingerprint-strings:
+[*] Nmap: |   GenericLines:
+[*] Nmap: |     Welcome to InterNiche Telnet Server 1.0 (Modified by GE)
+[*] Nmap: |     login:
+[*] Nmap: |     login:
+[*] Nmap: |     login:
+[*] Nmap: |   GetRequest:
+[*] Nmap: |     Welcome to InterNiche Telnet Server 1.0 (Modified by GE)
+[*] Nmap: |     login:password:
+[*] Nmap: |     login:
+[*] Nmap: |   Help:
+[*] Nmap: |     Welcome to InterNiche Telnet Server 1.0 (Modified by GE)
+[*] Nmap: |     login:password:
+[*] Nmap: |   NCP, NULL, RPCCheck, tn3270:
+[*] Nmap: |     Welcome to InterNiche Telnet Server 1.0 (Modified by GE)
+[*] Nmap: |     login:
+[*] Nmap: |   SIPOptions:
+[*] Nmap: |     Welcome to InterNiche Telnet Server 1.0 (Modified by GE)
+[*] Nmap: |     login:password:
+[*] Nmap: |     login:
+[*] Nmap: |     password:
+[*] Nmap: |     login:
+[*] Nmap: |     password:
+[*] Nmap: |     login:
+[*] Nmap: |     password:
+[*] Nmap: |     login:
+[*] Nmap: |_    password:
+[*] Nmap: 1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+[*] Nmap: SF-Port23-TCP:V=7.80%I=7%D=6/22%Time=62B35BB5%P=x86_64-pc-linux-gnu%r(NULL
+[*] Nmap: SF:,56,"\xff\xfb\x01\xff\xfd\x01\xff\xfb\x03\xff\xfd\x03\xff\xfb\x05\xff\x
+[*] Nmap: SF:fd\x05Welcome\x20to\x20InterNiche\x20Telnet\x20Server\x201\.0\x20\(Modi
+[*] Nmap: SF:fied\x20by\x20GE\)\r\n\r\n\r\nlogin:")%r(GenericLines,6A,"\xff\xfb\x01\
+[*] Nmap: SF:xff\xfd\x01\xff\xfb\x03\xff\xfd\x03\xff\xfb\x05\xff\xfd\x05Welcome\x20t
+[*] Nmap: SF:o\x20InterNiche\x20Telnet\x20Server\x201\.0\x20\(Modified\x20by\x20GE\)
+[*] Nmap: SF:\r\n\r\n\r\nlogin:\r\nlogin:\xff\xf9\r\nlogin:\xff\xf9")%r(tn3270,62,"\
+[*] Nmap: SF:xff\xfb\x01\xff\xfd\x01\xff\xfb\x03\xff\xfd\x03\xff\xfb\x05\xff\xfd\x05
+[*] Nmap: SF:Welcome\x20to\x20InterNiche\x20Telnet\x20Server\x201\.0\x20\(Modified\x
+[*] Nmap: SF:20by\x20GE\)\r\n\r\n\r\nlogin:\xff\xfe\x18\xff\xfe\x19\xff\xfc\x19\xff\
+[*] Nmap: SF:xfd\0")%r(GetRequest,6B,"\xff\xfb\x01\xff\xfd\x01\xff\xfb\x03\xff\xfd\x
+[*] Nmap: SF:03\xff\xfb\x05\xff\xfd\x05Welcome\x20to\x20InterNiche\x20Telnet\x20Serv
+[*] Nmap: SF:er\x201\.0\x20\(Modified\x20by\x20GE\)\r\n\r\n\r\nlogin:password:\xff\x
+[*] Nmap: SF:f9\r\nlogin:\xff\xf9")%r(RPCCheck,56,"\xff\xfb\x01\xff\xfd\x01\xff\xfb\
+[*] Nmap: SF:x03\xff\xfd\x03\xff\xfb\x05\xff\xfd\x05Welcome\x20to\x20InterNiche\x20T
+[*] Nmap: SF:elnet\x20Server\x201\.0\x20\(Modified\x20by\x20GE\)\r\n\r\n\r\nlogin:")
+[*] Nmap: SF:%r(Help,61,"\xff\xfb\x01\xff\xfd\x01\xff\xfb\x03\xff\xfd\x03\xff\xfb\x0
+[*] Nmap: SF:5\xff\xfd\x05Welcome\x20to\x20InterNiche\x20Telnet\x20Server\x201\.0\x2
+[*] Nmap: SF:0\(Modified\x20by\x20GE\)\r\n\r\n\r\nlogin:password:\xff\xf9")%r(SIPOpt
+[*] Nmap: SF:ions,B5,"\xff\xfb\x01\xff\xfd\x01\xff\xfb\x03\xff\xfd\x03\xff\xfb\x05\x
+[*] Nmap: SF:ff\xfd\x05Welcome\x20to\x20InterNiche\x20Telnet\x20Server\x201\.0\x20\(
+[*] Nmap: SF:Modified\x20by\x20GE\)\r\n\r\n\r\nlogin:password:\xff\xf9\r\nlogin:\xff
+[*] Nmap: SF:\xf9password:\xff\xf9\r\nlogin:\xff\xf9password:\xff\xf9\r\nlogin:\xff\
+[*] Nmap: SF:xf9password:\xff\xf9\r\nlogin:\xff\xf9password:\xff\xf9")%r(NCP,56,"\xf
+[*] Nmap: SF:f\xfb\x01\xff\xfd\x01\xff\xfb\x03\xff\xfd\x03\xff\xfb\x05\xff\xfd\x05We
+[*] Nmap: SF:lcome\x20to\x20InterNiche\x20Telnet\x20Server\x201\.0\x20\(Modified\x20
+[*] Nmap: SF:by\x20GE\)\r\n\r\n\r\nlogin:");
+[*] Nmap: Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+[*] Nmap: Nmap done: 1 IP address (1 host up) scanned in 39.14 seconds
+```
