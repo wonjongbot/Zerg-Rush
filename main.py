@@ -59,16 +59,17 @@ if __name__ == "__main__":
     from scapy.all import*
     from attacks import *
     import os
+    import argparse
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-s", "--src", help="Source IP address", type=str, default="NULL")
+    parser.add_argument("-d", "--dst", help="Destination IP address", type=str, default="NULL")
+    parser.add_argument("-p", "--dport", help="Destination port number", type=int, default=-1)
+
+    args = parser.parse_args()
 
     try:
-        src = sys.argv[1]
-        dst = sys.argv[2]
-        dport = int(sys.argv[3])
-    except:
-        src = "NULL"
-        dst = "NULL"
-        dport = int("-1")
-    try:
-        selection(src, dst, dport)
+        selection(args.src, args.dst, args.dport)
     except KeyboardInterrupt:
         print("\n[!] exiting Zerg Rush. See ya!")

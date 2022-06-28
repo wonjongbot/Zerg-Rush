@@ -1,3 +1,4 @@
+from nis import match
 from sys import flags
 from scapy.all import*
 import os
@@ -101,7 +102,8 @@ def UDPteardrop(src, dst, dport):
     print("    6. large payload (1300 bytes), looped packets (ctrl-c to send end packet), offset = 10x8 bytes")
     print("    7. custom input")
     x = input("zRush > ")
-    print("Using attack",x)
+    print("Using attack", x)
+    
     match x:
         case "1":
             size = 36
